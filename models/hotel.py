@@ -1,5 +1,7 @@
 from sql_alchemy import DATABASE
 
+# pylint: disable=no-member
+
 
 class HotelModel(DATABASE.Model):
     __tablename__ = 'hotels'
@@ -9,12 +11,15 @@ class HotelModel(DATABASE.Model):
     stars = DATABASE.Column(DATABASE.Float(precision=1))
     dayly = DATABASE.Column(DATABASE.Float(precision=2))
     city = DATABASE.Column(DATABASE.String(80))
+    site_id = DATABASE.Column(
+        DATABASE.Integer, DATABASE.ForeignKey('sites.site_id'))
 
-    def __init__(self, name: str, stars: float, dayly: float, city: str) -> None:
+    def __init__(self, name: str, stars: float, dayly: float, city: str, site_id: int) -> None:
         self.name = name
         self.stars = stars
         self.dayly = dayly
         self.city = city
+        self.site_id = site_id
 
     def json(self) -> dict:
         return {
@@ -22,7 +27,8 @@ class HotelModel(DATABASE.Model):
             'name': self.name,
             'stars': self.stars,
             'dayly': self.dayly,
-            'city': self.city
+            'city': self.city,
+            'site_id': self.site_id
         }
 
     @classmethod
