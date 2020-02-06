@@ -77,7 +77,8 @@ def complex_hotel_search():
             'name': line[1],
             'stars': line[2],
             'dayly': line[3],
-            'city': line[4]
+            'city': line[4],
+            'site_id': line[5]
         })
 
     return {'message': 'Result return successfully!', 'data': hotels}, 200
