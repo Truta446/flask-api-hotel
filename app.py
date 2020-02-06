@@ -8,7 +8,7 @@ from resources.user import User
 from resources.register import UserRegister
 from resources.login import UserLogin
 from resources.logout import UserLogout
-from resources.site import Site
+from resources.site import Site, SiteRemove
 from helpers.filters import normalize_data, consult_with_city, consult_without_city
 from blacklist import BLACKLIST
 from sql_alchemy import DATABASE
@@ -118,6 +118,7 @@ API.add_resource(UserRegister, '/signup')
 API.add_resource(UserLogin, '/signin')
 API.add_resource(UserLogout, '/signout')
 API.add_resource(Site, '/site')
+API.add_resource(SiteRemove, '/site/<int:site_id>')
 
 if __name__ == '__main__':
     from sql_alchemy import DATABASE
