@@ -89,13 +89,13 @@ def complex_hotel_search():
 def complex_hotel_search_optimized():
     body = reqparse.RequestParser()
 
-    body.add_argument('city', type=str)
-    body.add_argument('min_stars', type=float)
-    body.add_argument('max_stars', type=float)
-    body.add_argument('min_dayly', type=float)
-    body.add_argument('max_dayly', type=float)
-    body.add_argument('limit', type=int)
-    body.add_argument('offset', type=int)
+    body.add_argument('city', type=str,  required=True)
+    body.add_argument('min_stars', type=float,  required=True)
+    body.add_argument('max_stars', type=float,  required=True)
+    body.add_argument('min_dayly', type=float,  required=True)
+    body.add_argument('max_dayly', type=float,  required=True)
+    body.add_argument('limit', type=int,  required=True)
+    body.add_argument('offset', type=int,  required=True)
 
     data = body.parse_args()
 
