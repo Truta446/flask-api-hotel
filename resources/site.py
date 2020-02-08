@@ -4,6 +4,9 @@ from flask_jwt_extended import jwt_required
 
 
 class Site(Resource):
+    def get(self) -> dict:
+        return {'sites': [site.json() for site in SiteModel.query.all()]}
+
     @jwt_required
     def post(self) -> dict:
         args = reqparse.RequestParser()
@@ -25,15 +28,17 @@ class Site(Resource):
         except Exception as ex:
             return {'message': f'An internal error occurs when trying to create a new site: {ex}.'}, 500
 
+
+class SiteRemove(Resource):
     @jwt_required
     def delete(self, site_id: int) -> dict:
-        site = SiteModel.find_site(site_id)
+        site = SiteModel.find_by_id(site_id)
 
         if site:
             try:
-                site.delete_user()
+                site.delete_site()
                 return {'message': f'User {site_id} has been deleted with success!', 'data': site.json()}, 200
             except Exception as ex:
-                return {'message': f'An error ocurred when trying to delete user: {ex}'}, 500
+                return {'message': f'An error ocurred when trying to delete site: {ex}'}, 500
 
-        return {'message': 'User not found.', 'data': {}}, 404
+        return {'message': 'Site not found.', 'data': {}}, 404

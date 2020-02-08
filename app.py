@@ -8,7 +8,7 @@ from resources.user import User
 from resources.register import UserRegister
 from resources.login import UserLogin
 from resources.logout import UserLogout
-from resources.site import Site
+from resources.site import Site, SiteRemove
 from helpers.filters import normalize_data, consult_with_city, consult_without_city
 from blacklist import BLACKLIST
 from sql_alchemy import DATABASE
@@ -77,7 +77,8 @@ def complex_hotel_search():
             'name': line[1],
             'stars': line[2],
             'dayly': line[3],
-            'city': line[4]
+            'city': line[4],
+            'site_id': line[5]
         })
 
     return {'message': 'Result return successfully!', 'data': hotels}, 200
@@ -88,13 +89,13 @@ def complex_hotel_search():
 def complex_hotel_search_optimized():
     body = reqparse.RequestParser()
 
-    body.add_argument('city', type=str)
-    body.add_argument('min_stars', type=float)
-    body.add_argument('max_stars', type=float)
-    body.add_argument('min_dayly', type=float)
-    body.add_argument('max_dayly', type=float)
-    body.add_argument('limit', type=int)
-    body.add_argument('offset', type=int)
+    body.add_argument('city', type=str,  required=True)
+    body.add_argument('min_stars', type=float,  required=True)
+    body.add_argument('max_stars', type=float,  required=True)
+    body.add_argument('min_dayly', type=float,  required=True)
+    body.add_argument('max_dayly', type=float,  required=True)
+    body.add_argument('limit', type=int,  required=True)
+    body.add_argument('offset', type=int,  required=True)
 
     data = body.parse_args()
 
@@ -117,6 +118,7 @@ API.add_resource(UserRegister, '/signup')
 API.add_resource(UserLogin, '/signin')
 API.add_resource(UserLogout, '/signout')
 API.add_resource(Site, '/site')
+API.add_resource(SiteRemove, '/site/<int:site_id>')
 
 if __name__ == '__main__':
     from sql_alchemy import DATABASE

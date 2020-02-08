@@ -22,8 +22,16 @@ class SiteModel(DATABASE.Model):
 
     @classmethod
     def find_site(cls, url: str):
-
         site = cls.query.filter_by(url=url).first()
+
+        if site:
+            return site
+
+        return None
+
+    @classmethod
+    def find_by_id(cls, site_id: int):
+        site = cls.query.filter_by(site_id=site_id).first()
 
         if site:
             return site
@@ -36,5 +44,6 @@ class SiteModel(DATABASE.Model):
         return self.site_id
 
     def delete_site(self):
+        [hotel.delete_hotel() for hotel in self.hotels]
         DATABASE.session.delete(self)
         DATABASE.session.commit()
