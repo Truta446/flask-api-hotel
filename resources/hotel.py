@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
+from models.site import SiteModel
 from flask_jwt_extended import jwt_required
 
 
@@ -8,9 +9,11 @@ def getInformations() -> dict:
 
     args.add_argument('name', type=str, required=True,
                       help="The field 'nome' cannot be left blank.")
-    args.add_argument('stars', type=float, required=False)
-    args.add_argument('dayly', type=float, required=False)
-    args.add_argument('city', type=str, required=False)
+    args.add_argument('stars', type=float)
+    args.add_argument('dayly', type=float)
+    args.add_argument('city', type=str)
+    args.add_argument('site_id', type=int, required=True,
+                      help='Every hotel needs to be linked with a site.')
 
     return args.parse_args()
 
