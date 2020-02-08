@@ -48,6 +48,9 @@ class Hotel(Resource):
     def put(self, hotel_id: int) -> dict:
         data = getInformations()
 
+        if not SiteModel.find_by_id(data.get('site_id')):
+            return {'message': 'The hotel must be associated to a valid site id.'}, 400
+
         wanted_hotel = HotelModel.find_hotel(hotel_id)
 
         if wanted_hotel:
