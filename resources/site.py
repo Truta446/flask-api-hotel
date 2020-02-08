@@ -4,6 +4,9 @@ from flask_jwt_extended import jwt_required
 
 
 class Site(Resource):
+    def get(self) -> dict:
+        return {'sites': [site.json() for site in SiteModel.query.all()]}
+
     @jwt_required
     def post(self) -> dict:
         args = reqparse.RequestParser()
