@@ -22,8 +22,16 @@ class SiteModel(DATABASE.Model):
 
     @classmethod
     def find_site(cls, url: str):
-
         site = cls.query.filter_by(url=url).first()
+
+        if site:
+            return site
+
+        return None
+
+    @classmethod
+    def find_by_id(cls, site_id: int):
+        site = cls.query.filter_by(site_id=site_id).first()
 
         if site:
             return site
