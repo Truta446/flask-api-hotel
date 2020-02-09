@@ -1,4 +1,11 @@
 from sql_alchemy import DATABASE
+from flask import request, url_for
+from requests import post
+
+MAILGUN_DOMAIN = 'sandboxd13d36700081416a9c98d5ffb492fe63.mailgun.org'
+MAILGUN_API_KEY = '4b21f524bfd43eb9cc4c5652d41c5cc6-f8faf5ef-9439523a'
+FROM_TITLE = 'NO-REPLY'
+FROM_EMAIL = 'no-reply@restapi.com'
 
 # pylint: disable=no-member
 
@@ -7,18 +14,36 @@ class UserModel(DATABASE.Model):
     __tablename__ = 'users'
 
     user_id = DATABASE.Column(DATABASE.Integer, primary_key=True)
-    email = DATABASE.Column(DATABASE.String(40))
-    password = DATABASE.Column(DATABASE.String(40))
+    email = DATABASE.Column(DATABASE.String(40), nullable=False, unique=True)
+    password = DATABASE.Column(DATABASE.String(40), nullable=False)
+    active = DATABASE.Column(DATABASE.Boolean, default=False)
 
-    def __init__(self, email: str, password: str) -> None:
+    def __init__(self, email: str, password: str, active: bool) -> None:
         self.email = email
         self.password = password
+        self.active = active
 
     def json(self) -> dict:
         return {
             'user_id': self.user_id,
-            'email': self.email
+            'email': self.email,
+            'active': self.active
         }
+
+    def send_confirmation_email(self):
+        link = request.url_root[:-1] + \
+            url_for('userconfirm', user_id=self.user_id)
+        return post(f'https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages',
+                    auth=('api', MAILGUN_API_KEY),
+                    data={
+                        'from': f'{FROM_TITLE} <{FROM_EMAIL}>',
+                        'to': self.email,
+                        'subject': 'Confirmação de cadastro',
+                        'text': f'Confirme seu cadastro clicando no link a seguir: {link}',
+                        'html': f'<html>\
+                            <p>Confirme seu cadastro clicando no link a seguir: <a href="{link}">CONFIRMAR E-MAIL</a></p>\
+                        </html>'
+                    })
 
     @classmethod
     def find_user(cls, user_id: int):
